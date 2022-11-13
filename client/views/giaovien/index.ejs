@@ -1,0 +1,340 @@
+<% include ../layout/header.ejs %>
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-angle-right" aria-hidden="true"></i> Danh sách giáo viên</h3>
+          <% if(locals.Role == 1){%>
+          <button class="btn btn-app" data-toggle="modal" data-target="#Modalthem" title="Thêm mới giáo viên">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app refresh" title="Làm mới trang này">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app restore" data-toggle="modal" data-target="#restore" title="Hồi phục giáo viên">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <% }else{%>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <%} %>
+        </div>
+        <div class="title_right">
+          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right">
+            <!--  -->
+            <span class="form-inline pull-right">
+              <div class="input-group-append">
+                      <select id="nhomquyen" class="form-control">
+                          <option value="all" selected>-- Tất cả --</option>
+                      </select>
+                      <input class="form-control" type="search" placeholder="tìm kiếm..." value="" id="Search">
+                      <input class="form-control" type="date" id="daysearch" >
+              </div>
+            </span>
+            <!--  -->
+          </div>
+        </div>
+      </div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <div class="clearfix"></div>
+        </div>
+<div class="x_content">
+    <div class="table-responsive">
+        <table class="table table-striped jambo_table bulk_action table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold">
+          <thead>
+            <tr class="headings">
+              <th class="column-title">Mã</th>
+              <th class="column-title">Họ Tên</th>
+              <th class="column-title">Ngày Sinh</th>
+              <th class="column-title">Giới Tính</th>
+              <th class="column-title">Địa Chỉ</th>
+              <th class="column-title">Trình Độ</th>
+              <th class="column-title">Môn Học</th>
+              <th class="column-title text-center">Tùy Chọn</th>
+            </tr>
+          </thead>
+          <tbody id="tb_model">
+              <% if(ketqua.length)
+              {ketqua.forEach(function(e, i){%>
+              <tr>
+                <td><%= e.ma_gv %></td>
+                <td><%= e.ten_gv %></td>
+                <td>
+                  <% if(e.ngaysinh_ejs){%>
+                    <%= e.ngaysinh_ejs %>
+                  <%}else{%>
+                    <span class="text-danger">Chưa cập nhật</span>
+                  <%}%>
+                </td>
+                <td>
+                  <% if(e.gioitinh === true){ %>
+                    <span>Nam</span>
+                  <% }else{ %>
+                    <span>Nữ</span>
+                  <% } %> %>
+                </td>
+                <td><%= e.diachi %></td>
+                <td><%= e.trinhdo %></td> 
+                <td><%= e.ten_mh %></td>            
+                <td class="text-center">
+                  <% if(locals.Role == 1){%>
+                    <button class="btn btn-primary btn-xs edit" idgv = "<%= e.stt %>" title="Cập nhật thông tin giáo viên"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-xs delete" idgv = "<%= e.stt %>" title="Xóa thông tin giáo viên"><i class="fa fa-trash-o "></i></button>    
+                  <% }else{%>
+                    <button class="btn btn-primary btn-xs" disabled title="Không có quyền này"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button>    
+                  <%} %>
+                </td>
+              </tr>
+            <% })}else{%>
+              <tr class="text-center text-danger">
+                  <td colspan="9">
+                  Không có Dữ Liệu
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <!-- Phân trang -->
+      <div class="box-footer clearfix">
+          <% include page.ejs %>
+      </div>
+      <!-- End phân trang -->
+      <% if(locals.Role == 1){%>
+      <!-- Modal -->
+      <div class="modal" id="Modalthem" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title" style="font-size: 1.5 rem;">&nbsp; Thêm mới giáo viên</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <form action="./giaovien/insert" id="form_insert" method="POST">
+              <div class="modal-body">
+                <!-- Mã giáo viên -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Mã</label>  
+                      <input type="text" id="kiemtra_insert" name="ma_gv" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã giáo viên"> 
+                    </div>
+                <!-- Tên giáo viên -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Họ tên</label>  
+                      <input type="text" name="ten_gv" class="form-control" autocomplete="off" spellcheck="false" placeholder="Họ tên"> 
+                    </div>
+                <!-- Ngày sinh -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Ngày sinh</label>  
+                      <input type="date" name="ngaysinh" class="form-control" autocomplete="off" spellcheck="false" placeholder="Ngày sinh"> 
+                    </div>
+                <!-- Gioi tính -->
+                    <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Giới tính</label>  
+                        <select class="form-control" name="gioitinh" required>
+                            <option value="null" selected disabled>-- Chọn giới tính --</option>
+                            <option value="true"> Nam</option>
+                            <option value="false">Nữ</option>
+                        </select>
+                    </div>
+                <!-- Địa chỉ -->
+                    <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Địa chỉ</label>  
+                        <input type="text" name="diachi" class="form-control" autocomplete="off" spellcheck="false" placeholder="Địa chỉ">
+                      </div>
+                <!-- Niên khóa -->
+                    <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Trình Độ</label>  
+                        <input type="text" name="trinhdo" class="form-control" autocomplete="off" spellcheck="false" placeholder="Trình độ"> 
+                    </div>
+                <!-- Tên môn học -->
+                    <div class="form-group">
+                      <label for="monhoc">Môn học</label>
+                      <select class="form-control" name="monhoc">
+                          <option value="null" selected disabled>-- Chọn môn giảng dạy --</option>
+                          <% kq_sqlmonhoc.forEach(tbl_monhoc => { %>
+                              <option value="<%- tbl_monhoc.id_mh  %>"><%- tbl_monhoc.ten_mh %></option>
+                          <% }); %>
+                      </select>
+                    </div>
+              </div>  
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                <button type="submit" id="save_data_insert" class="btn btn-primary">Lưu</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+        <!-- Modal Update -->
+      <div class="modal" id="Modalsua" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header  alert alert-success">
+                <h4 class="modal-title" style="font-size: 1.5 rem;">&nbsp; Cập nhật giáo viên</h4>
+                <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <!-- Modal body -->
+              <form action="./giaovien/update" id="form_update" method="POST">
+                <div class="modal-body">
+                  <!-- Mã giáo viên -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Mã</label>  
+                        <input type="number" id="stt" name="id" hidden>
+                        <input type="text" id="kiemtra_update" name="ma_gv" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã giáo viên" readonly > 
+                      </div>
+                  <!-- Tên giáo viên -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Họ tên</label>  
+                        <input type="text" id="ten_gv" name="ten_gv" class="form-control" autocomplete="off" spellcheck="false" placeholder="Họ tên"> 
+                      </div>
+                  <!-- Ngày sinh -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Ngày sinh</label>  
+                        <input type="date" id="ngaysinh" name="ngaysinh" class="form-control" autocomplete="off" spellcheck="false" placeholder="Ngày sinh"> 
+                      </div>
+                  <!-- Gioi tính -->
+                      <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Giới tính</label>  
+                          <select class="form-control" id="gioitinh" name="gioitinh" required>
+                              <option value="null" selected disabled>-- Chọn giới tính --</option>
+                              <option value="true"> Nam</option>
+                              <option value="false">Nữ</option>
+                          </select>
+                      </div>
+                  <!-- Địa chỉ -->
+                      <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Địa chỉ</label>  
+                          <input type="text" id="diachi" name="diachi" class="form-control" autocomplete="off" spellcheck="false" placeholder="Địa chỉ">
+                        </div>
+                  <!-- Niên khóa -->
+                      <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Trình Độ</label>  
+                          <input type="text" id="trinhdo" name="trinhdo" class="form-control" autocomplete="off" spellcheck="false" placeholder="Trình độ"> 
+                      </div>
+                  <!-- Tên môn học -->
+                      <div class="form-group">
+                        <label for="monhoc">Môn học</label>
+                        <select class="form-control" id="monhoc_api" name="monhoc" disabled="true">
+                            <option value="null" selected disabled>-- Chọn môn giảng dạy --</option>
+                            <% kq_sqlmonhoc.forEach(tbl_monhoc => { %>
+                                <option value="<%- tbl_monhoc.id_mh  %>"><%- tbl_monhoc.ten_mh %></option>
+                            <% }); %>
+                        </select>
+                      </div>
+                </div>  
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                  <button type="submit" id="save_data_update" class="btn btn-primary">Lưu</button>
+              </div>
+              </form>
+            </div>
+          </div>
+      </div>
+        <!-- End Modal Update -->
+      <!-- End Modal -->
+      <div class="modal" id="restore">
+        <div class="modal-dialog mw-100 w-75">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title">Phục hồi thông tin giáo viên</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+             <div class="row">
+               <div class="col-12">
+                <table class="weekly table-hover main-manager-display table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold;text-align: center; width: 100%">
+                      <!-- Content in --> 
+                        <thead>	
+                          <tr class="headings" style="font-weight: bold;">
+                            <th class="column-title">Mã</th>
+                            <th class="column-title">Họ Tên</th>
+                            <th class="column-title">Ngày Sinh</th>
+                            <th class="column-title">Giới Tính</th>
+                            <th class="column-title">Địa Chỉ</th>
+                            <th class="column-title">Trình Độ</th>
+                            <th class="column-title">Môn Học</th>
+                            <th class="column-title">Tùy Chọn</th>
+                          </tr>
+                        </thead>
+                          <tbody style="color: black;">
+                            <% if(hoiphuc.length)
+                            {hoiphuc.forEach(function(e, i){%>
+                            <tr>
+                                <td><%= e.ma_gv %></td>
+                                <td><%= e.ten_gv %></td>
+                                <td>
+                                  <% if(e.ngaysinh_ejs1){%>
+                                    <%= e.ngaysinh_ejs1 %>
+                                  <%}else{%>
+                                    <span class="text-danger">Chưa cập nhật</span>
+                                  <%}%>
+                                </td>
+                                <td>
+                                  <% if(e.gioitinh === true){ %>
+                                    <span>Nam</span>
+                                  <% }else{ %>
+                                    <span>Nữ</span>
+                                  <% } %> %>
+                                </td>
+                                <td><%= e.diachi %></td>
+                                <td><%= e.trinhdo %></td> 
+                                <td><%= e.ten_mh %></td>            
+                                <td>
+                                    <button class="btn btn-success btn-sm btn_restore" idgv = "<%= e.stt %>" title="Phục hồi vào danh sách giáo viên"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                                    <button class="btn btn-danger btn-sm btn_delete" idgv = "<%= e.stt %>" title="Xóa tất cả thông tin giáo viên"><i class="fa fa-trash-o "></i></button>    
+                                </td>
+                            </tr>
+                          <% })}else{%>
+                            <tr class="text-center text-danger">
+                              <td colspan="9" style="padding-top: 15px;">
+                                Không có dữ liệu
+                              </td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      <!-- End content in -->
+                </table>
+               </div>
+             </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+            </div>
+          </div>
+          </div>
+       <!-- End hồi phục -->
+      </div>
+      <!-- Thông báo -->
+      <% } %>
+</div>
+<% include ../layout/footer.ejs %>
+<!-- Thiếu thư viện này throttle không hoạt động -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+<script src="./js/giaovien.js"></script>
+<% if(message != ""){ %>
+  <script>
+      Swal.fire({
+          title:"Thông báo!",
+          text:"<%= message %>"
+      });
+  </script>
+<% } %>

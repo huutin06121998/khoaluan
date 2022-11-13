@@ -1,0 +1,350 @@
+<% include ../layout/header.ejs %>
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-angle-right" aria-hidden="true"></i> Danh sách học sinh</h3>
+          <% if(locals.Role == 1){%>
+          <button class="btn btn-app" data-toggle="modal" data-target="#Modalthem" title="Thêm mới học sinh">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app refresh" title="Làm mới">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app restore" data-toggle="modal" data-target="#restore" title="Hồi phục">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <%}else{%>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <%} %>
+        </div>
+        <div class="title_right">
+          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right">
+            <!--  -->
+            <span class="form-inline pull-right">
+              <div class="input-group-append">
+                      <select id="nhomquyen" class="form-control">
+                          <option value="all" selected>-- Tất cả --</option>
+                      </select>
+                      <input class="form-control" type="search" placeholder="tìm kiếm..." value="" id="Search">
+                      <input class="form-control" type="date" id="daysearch" >
+              </div>
+            </span>
+            <!--  -->
+          </div>
+        </div>
+      </div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <div class="clearfix"></div>
+        </div>
+<div class="x_content">
+    <div class="table-responsive">
+        <table class="table table-striped jambo_table bulk_action table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold">
+          <thead>
+            <tr class="headings">
+              <th class="column-title">Mã</th>
+              <th class="column-title">Họ Tên</th>
+              <th class="column-title">Lớp</th>
+              <th class="column-title">Khối</th>
+              <th class="column-title">Ngày Sinh</th>
+              <th class="column-title">Giới Tính</th>
+              <th class="column-title">Địa Chỉ</th>
+              <th class="column-title">Niên Khóa</th>
+              <th class="column-title text-center">Tùy Chọn</th>
+            </tr>
+          </thead>
+          <tbody id="tb_model">
+              <% if(ketqua.length)
+              {ketqua.forEach(function(e, i){%>
+              <tr>
+                <td><%= e.ma_hs %></td>
+                <td><%= e.ten_hs %></td>
+                <td><%= e.ten_lop %></td>
+                <td><%= e.khoi %></td>
+                <td><%= e.ngaysinht1 %></td>
+                <td>
+                  <% if(e.gioitinh === true){ %>
+                    <span>Nam</span>
+                  <% }else{ %>
+                    <span>Nữ</span>
+                  <% } %> 
+                </td>
+                <td><%= e.diachi %></td>
+                <td><%= e.nienkhoa %></td>             
+                <td class="text-center">
+                  <% if(locals.Role == 1){%>
+                    <button class="btn btn-primary btn-xs edit" idhs = "<%= e.stt %>" title="Cập nhật thông tin học sinh"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-xs delete" idhs = "<%= e.stt %>" title="Xóa thông tin học sinh"><i class="fa fa-trash-o "></i></button>   
+                  <% }else{%>
+                    <button class="btn btn-primary btn-xs" disabled title="Không có quyền này"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button>   
+                  <%} %> 
+                </td>
+              </tr>
+            <% })}else{%>
+              <tr class="text-center text-danger">
+                  <td colspan="9">
+                  Không có Dữ Liệu
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <!-- Phân trang -->
+      <div class="box-footer clearfix">
+          <% include page.ejs %>
+      </div>
+      <!-- End phân trang -->
+      <!-- Modal -->
+      <% if(locals.Role == 1){%>
+      <div class="modal" id="Modalthem" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+            <div class="modal-dialog">
+              <div class="modal-content"> 
+                <!-- Modal Header -->
+                <div class="modal-header  alert alert-success">
+                  <h5 class="modal-title" style="font-size: 1.5 rem">&nbsp; Thêm mới học sinh</h4>
+                  <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <form action="./hocsinh/insert" id="form_insert" method="POST">
+                  <div class="modal-body">
+                    <!-- Mã học sinh -->
+                        <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Mã</label>  
+                          <input type="text" name="ma_hs" id="mahs_i" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã học sinh"> 
+                        </div>
+                    <!-- Tên học sinh -->
+                        <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Họ tên</label>  
+                          <input type="text" name="ten_hs" id="tenhs_i" class="form-control" autocomplete="off" spellcheck="false" placeholder="Họ tên học sinh"> 
+                        </div>
+                    <!-- Lớp -->
+                        <div class="form-group">
+                          <label for="huyen">Lớp</label>
+                          <select class="form-control" name="lop" id="lop_sel">
+                              <option value="null" selected disabled>-- Chọn lớp --</option>
+                              <% kq_lop.forEach(tbl_lop => { %>
+                                  <option value="<%- tbl_lop.ma_lop  %>"><%- tbl_lop.ten_lop %></option>
+                              <% }); %>
+                          </select>
+                        </div>
+                    <!-- Khối -->
+                        <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Khối lớp</label>  
+                          <select class="form-control" name="khoi_lop" required>
+                            <option value="null" selected disabled>-- Chọn khối lớp --</option>
+                            <option value="6"> Khối lớp 6</option>
+                            <option value="7"> Khối lớp 7</option>
+                            <option value="8"> Khối lớp 8</option>
+                            <option value="9"> Khối lớp 9</option>
+                        </select>
+                        </div>
+                    <!-- Ngày sinh -->
+                        <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Ngày sinh</label>  
+                          <input type="date" name="ngaysinh" class="form-control" autocomplete="off" spellcheck="false" placeholder="Ngày sinh"> 
+                        </div>
+                    <!-- Gioi tính -->
+                        <div class="form-group">
+                            <label for="text-input" class=" form-control-label">Giới tính</label>  
+                            <select class="form-control" name="gioitinh" required>
+                                <option value="null" selected disabled>-- Chọn giới tính --</option>
+                                <option value="true"> Nam</option>
+                                <option value="false">Nữ</option>
+                            </select>
+                        </div>
+                    <!-- Địa chỉ -->
+                        <div class="form-group">
+                            <label for="text-input" class=" form-control-label">Địa chỉ</label>  
+                            <input type="text" name="diachi" class="form-control" autocomplete="off" spellcheck="false" placeholder="Địa chỉ">
+                          </div>
+                    <!-- Niên khóa -->
+                        <div class="form-group">
+                            <label for="text-input" class=" form-control-label">Niên khóa</label>  
+                            <input type="text" name="nienkhoa" class="form-control" autocomplete="off" spellcheck="false" placeholder="Niên khóa"> 
+                        </div>
+                  </div>  
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                    <button type="submit" id="luu_i" class="btn btn-primary">Lưu</button>
+                </div>
+                </form>
+              </div>
+            </div>
+      </div>
+      <!-- Modal Update -->
+      <div class="modal" id="ModalUpdate" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header  alert alert-success">
+                <h4 class="modal-title" style="font-size: 1.5 rem">&nbsp; Cập nhật học sinh</h4>
+                <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <!-- Modal body -->
+              <form action="./hocsinh/update" id="form_update" method="POST">
+                <div class="modal-body">
+                  <!-- Mã học sinh -->
+                      <div class="form-group">
+                        <input type="number" id="stt" name="stt_hs" hidden>
+                        <label for="text-input" class=" form-control-label">Mã</label>  
+                        <input type="text" id="ma_hs_u" name="ma_hs" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã học sinh" readonly> 
+                      </div>
+                  <!-- Tên học sinh -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Họ tên</label>  
+                        <input type="text" id="ten_hs_u" name="ten_hs" class="form-control" autocomplete="off" spellcheck="false" placeholder="Họ tên học sinh"> 
+                      </div>
+                  <!-- Lớp -->
+                      <div class="form-group">
+                        <label for="lop">Lớp</label>
+                        <select class="form-control" id="lop_hs_u" name="lop">
+                            <option value="null" selected disabled>-- Chọn lớp --</option>
+                            <% kq_lop.forEach(tbl_lop => { %>
+                                <option value="<%- tbl_lop.ma_lop  %>"><%- tbl_lop.ten_lop %></option>
+                            <% }); %>
+                        </select>
+                      </div>
+                  <!-- Khối -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Khối</label>  
+                        <input type="text" id="khoi_lop_u" name="khoi_lop" class="form-control" autocomplete="off" spellcheck="false" placeholder="Khối lớp"> 
+                      </div>
+                  <!-- Ngày sinh -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Ngày sinh</label>  
+                        <input type="date" id="ngaysinh_hs_u" name="ngaysinh" class="form-control" autocomplete="off" spellcheck="false" placeholder="Ngày sinh"> 
+                      </div>
+                  <!-- Gioi tính -->
+                      <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Giới tính</label>  
+                          <select class="form-control" id="gioitinh_u" name="gioitinh" required>
+                              <option value="null" selected disabled>-- Chọn giới tính --</option>
+                              <option value="true"> Nam</option>
+                              <option value="false">Nữ</option>
+                          </select>
+                      </div>
+                  <!-- Địa chỉ -->
+                      <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Địa chỉ</label>  
+                          <input type="text" id="diachi_u" name="diachi" class="form-control" autocomplete="off" spellcheck="false" placeholder="Địa chỉ">
+                        </div>
+                  <!-- Niên khóa -->
+                      <div class="form-group">
+                          <label for="text-input" class=" form-control-label">Niên khóa</label>  
+                          <input type="text" id="nienkhoa_u" name="nienkhoa" class="form-control" autocomplete="off" spellcheck="false" placeholder="Niên khóa"> 
+                      </div>
+                </div>  
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                  <button type="submit" id="luu_u" class="btn btn-primary">Cập nhật</button>
+              </div>
+              </form>
+            </div>
+          </div>
+      </div>
+      <!-- End Modal Update -->
+      <!-- Modal restore -->
+      <div class="modal" id="restore" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog mw-100 w-75">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title" style="font-size: 1.5 rem">Phục hồi thông tin học sinh</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+             <div class="row">
+               <div class="col-12">
+                <table class="weekly table-hover main-manager-display  table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold;text-align: center; width: 100%;font-weight: bold">
+                      <!-- Content in --> 
+                        <thead>	
+                          <tr class="headings" style="font-weight: bold;">
+                            <th class="column-title">Mã</th>
+                            <th class="column-title">Họ Tên</th>
+                            <th class="column-title">Lớp</th>
+                            <th class="column-title">Khối</th>
+                            <th class="column-title">Ngày Sinh</th>
+                            <th class="column-title">Giới Tính</th>
+                            <th class="column-title">Địa Chỉ</th>
+                            <th class="column-title">Niên Khóa</th>
+                            <th class="column-title">Tùy Chọn</th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                            <% if(hoiphuc.length)
+                            {hoiphuc.forEach(function(e, i){%>
+                            <tr>
+                              <td><%= e.ma_hs %></td>
+                              <td><%= e.ten_hs %></td>
+                              <td><%= e.ten_lop %></td>
+                              <td><%= e.khoi %></td>
+                              <td><%= e.ngaysinht1_hp %></td>
+                              <td>
+                                <% if(e.gioitinh === true){ %>
+                                  <span>Nam</span>
+                                <% }else{ %> 
+                                  <span>Nữ</span>
+                                <% } %> %>
+                              </td>
+                              <td><%= e.diachi %></td>
+                              <td><%= e.nienkhoa %></td>           
+                              <td>
+                                  <button class="btn btn-success btn-sm btn_restore" idhs = "<%= e.stt %>" title="Phục hồi"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                                  <button class="btn btn-danger btn-sm btn_delete" idhs = "<%= e.stt %>" title="Xóa tất cả thông tin học sinh"><i class="fa fa-trash-o "></i></button>    
+                              </td>
+                            </tr>
+                          <% })}else{%>
+                            <tr class="text-center text-danger">
+                              <td colspan="9" style="padding-top: 15px;">
+                                Không có dữ liệu
+                              </td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      <!-- End content in -->
+                </table>
+               </div>
+             </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+            </div>
+          </div>
+          </div>
+       <!-- End hồi phục -->
+      </div>
+      <% } %>
+      <!-- End modal restore -->
+      <!-- End Modal -->
+      <!-- Thông báo -->
+</div>
+<% include ../layout/footer.ejs %>
+<!-- Thiếu thư viện này throttle không hoạt động -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+<script src="./js/hocsinh.js"></script>
+<% if(message != ""){ %>
+  <script>
+      Swal.fire({
+          title:"Thông báo!",
+          text:"<%= message %>"
+      });
+  </script>
+<% } %> 

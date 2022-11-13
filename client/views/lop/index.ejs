@@ -1,0 +1,256 @@
+<% include ../layout/header.ejs %>
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-angle-right" aria-hidden="true"></i> Danh sách lớp</h3>
+          <% if(locals.Role == 1){%>
+          <button class="btn btn-app" data-toggle="modal" data-target="#Modalthem" title="Thêm mới học sinh">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app refresh" title="Làm mới">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app restore" data-toggle="modal" data-target="#restore" title="Hồi phục">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <% }else{%>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <%}  %>
+        </div>
+        <div class="title_right">
+          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right">
+            <!--  -->
+            <span class="form-inline pull-right">
+              <div class="input-group-append">
+                      <select id="nhomquyen" class="form-control">
+                          <option value="all" selected>-- Tất cả --</option>
+                      </select>
+                      <input class="form-control" type="search" placeholder="tìm kiếm..." value="" id="Search">
+              </div>
+            </span>
+            <!--  -->
+          </div>
+        </div>
+      </div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <div class="clearfix"></div>
+        </div>
+<div class="x_content">
+    <div class="table-responsive">
+        <table class="table table-striped jambo_table bulk_action table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold">
+          <thead>
+            <tr class="headings">
+              <th class="column-title">Mã Lớp</th>
+              <th class="column-title">Tên Lớp</th>
+              <th class="column-title">Giáo Viên Chủ Nhiệm</th>
+              <th class="column-title text-center">Tùy Chọn</th>
+            </tr>
+          </thead>
+          <tbody id="tb_model">
+              <% if(ketqua.length)
+              {ketqua.forEach(function(e, i){%>
+              <tr>
+                <td><%= e.ma_lop %></td>
+                <td><%= e.ten_lop %></td>
+                <td>
+                    <%= e.ten_gv %>
+                </td>          
+                <td class="text-center">
+                  <% if(locals.Role == 1){%>
+                    <button class="btn btn-primary btn-xs edit" id_lop = "<%= e.stt %>" title="Cập nhật thông tin học sinh"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-xs delete" id_lop = "<%= e.stt %>" title="Xóa thông tin học sinh"><i class="fa fa-trash-o "></i></button>  
+                  <% }else{%>
+                    <button class="btn btn-primary btn-xs" disabled title="Không có quyền này"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button>  
+                  <%} %>  
+                </td>
+              </tr>
+            <% })}else{%>
+              <tr class="text-center text-danger">
+                  <td colspan="9">
+                  Không có Dữ Liệu
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <!-- Phân trang -->
+      <div class="box-footer clearfix">
+          <% include page.ejs %>
+      </div>
+      <!-- End phân trang -->
+      <% if(locals.Role == 1){%>
+      <!-- Modal -->
+      <div class="modal" id="Modalthem" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title" style="font-size: 1.5 rem">&nbsp; Thêm mới lớp học</h4>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <form action="./lop/insert" id="form_insert" method="POST">
+              <div class="modal-body">
+                <!-- Mã lớp -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Mã</label>  
+                      <input type="text" id="malop_i" name="ma_lop" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã lớp"> 
+                    </div>
+                <!-- Tên lớp -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Tên lớp</label>  
+                      <input type="text" name="ten_lop" class="form-control" autocomplete="off" spellcheck="false" placeholder="Tên lớp"> 
+                    </div>
+                <!-- Giáo viên chủ nhiệm -->
+                <div class="form-group">
+                  <label for="gvcn">Giáo viên chủ nhiệm</label>
+                  <select class="form-control" name="gvcn">
+                      <option value="null" selected disabled>-- Chọn giáo viên chủ nhiệm --</option>
+                      <% gvcn.forEach(tbl_giaovien => { %>
+                          <option value="<%- tbl_giaovien.ma_gv  %>"><%- tbl_giaovien.ten_gv %></option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>  
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                <button type="submit" id="luu_i" class="btn btn-primary">Lưu</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Update -->
+      <div class="modal" id="ModalUpdate" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h4 class="modal-title">&nbsp; Cập nhật lớp học</h4>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <form action="./lop/update" id="form_update" method="POST">
+              <div class="modal-body">
+                <!-- Mã lớp -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Mã</label>  
+                      <input type="number" id="id_lop" name="id_lop" hidden>
+                      <input type="text" name="ma_lop" id="ma_lop" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã lớp" readonly> 
+                    </div>
+                <!-- Tên lớp -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Tên lớp</label>  
+                      <input type="text" name="ten_lop" id="ten_lop" class="form-control" autocomplete="off" spellcheck="false" placeholder="Tên lớp"> 
+                    </div>
+                <!-- Lớp -->
+                <div class="form-group">
+                  <label for="huyen">Giáo viên chủ nhiệm</label>
+                  <select class="form-control" id="gvcn_u" name="gvcn" disabled="true">
+                      <option value="null" selected disabled>-- Chọn giáo viên chủ nhiệm --</option>
+                      <% gvcn_c1.forEach(tbl_giaovien => { %>
+                        <option value="<%- tbl_giaovien.ma_gv  %>"><%- tbl_giaovien.ten_gv %></option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>  
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                <button type="submit" id="luu_u" class="btn btn-primary">Cập nhật</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- End Modal Update -->
+      <!-- Modal hoi phuc -->
+      <div class="modal" id="restore" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog mw-100 w-75">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title">Phục hồi thông tin lớp học</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+             <div class="row"> 
+               <div class="col-12">
+                <table class="weekly table-hover main-manager-display table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold;text-align: center; width: 100%">
+                      <!-- Content in --> 
+                        <thead>	
+                          <tr class="headings" style="font-weight: bold;">
+                            <th class="column-title">Mã Lớp</th>
+                            <th class="column-title">Tên Lớp</th>
+                            <th class="column-title">Giáo Viên Chủ Nhiệm</th>
+                            <th class="column-title">Tùy Chọn</th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                            <% if(hoiphuc.length)
+                            {hoiphuc.forEach(function(e, i){%>
+                            <tr>
+                              <td><%= e.ma_lop %></td>
+                              <td><%= e.ten_lop %></td>
+                              <td>
+                                <%= e.ten_gv %>
+                              </td>                    
+                                <td>
+                                    <button class="btn btn-success btn-sm btn_restore" idlop = "<%= e.stt %>" title="Phục hồi"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                                    <button class="btn btn-danger btn-sm btn_delete" idlop = "<%= e.stt %>" title="Xóa tất cả thông tin lớp học"><i class="fa fa-trash-o "></i></button>    
+                                </td>
+                            </tr>
+                          <% })}else{%>
+                            <tr class="text-center text-danger">
+                              <td colspan="9" style="padding-top: 15px;">
+                                Không có dữ liệu
+                              </td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      <!-- End content in -->
+                </table>
+               </div>
+             </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+            </div>
+          </div>
+          </div>
+       <!-- End hồi phục -->
+      </div>
+      <!-- End Modal -->
+      <% } %>
+      <!-- Thông báo -->
+</div>
+<% include ../layout/footer.ejs %>
+<!-- Thiếu thư viện này throttle không hoạt động -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+<script src="./js/lop.js"></script>
+<% if(message != ""){ %>
+    <script>
+        Swal.fire({
+            title:"Thông báo!",
+            text:"<%= message %>"
+        });
+    </script>
+  <% } %>

@@ -1,0 +1,24 @@
+<div id="page" class="text-center">
+    <%var cla="btn-default"; 
+      if(tongtrang<=5){
+      for (i = 1; i <= tongtrang; i++) 
+      { if(i==page){ cla="btn-primary";}
+      else { cla="btn-default";}
+          %>			
+      <button class="btn <%- cla%>  page" ><%- i%></button> 
+    <%} 
+  } else{
+  %>
+  <button class="btn btn-light Previous hidden"><i class="fa fa-angle-double-left "></i></button>
+  <%
+      for (i = 1; i <= 5; i++)
+          { if(i==page){ cla="btn-primary";}
+      else { cla="btn-default";}
+          %>			
+      <button class="btn <%- cla%>  page" ><%- i%></button> 
+      <%	}%>    
+      <button class="btn btn-light Next" id="after"><i class="fa fa-angle-double-right  "></i></button> &nbsp;
+      <%
+      } %>
+<div class="text-center"><span>Trang <span id="page-now"><%- page%></span>/<span id="tongtrang"><%- tongtrang%></span></span></div>        
+</div>

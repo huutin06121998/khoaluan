@@ -1,0 +1,40 @@
+<tbody id="tb_model">
+  <!-- vòng lặpA -->
+  <!-- STT -->
+  <% if(ds_tongketcanam.length)
+      {ds_tongketcanam.forEach(function(e, i){%>
+  <tr>
+    <td><%= e.ma_hs %></td>
+    <td><%= e.ten_hs %></td>
+    <td><%= e.diemtk_cm %></td>
+    <td>
+      <% if(e.diemtk_cm >= 8 && e.diemtk_cm <= 10) {%>
+       <span>Học lực giỏi</span>
+      <%} else if(e.diemtk_cm >= 6.5 && e.diemtk_cm <= 7.9) {%>
+       <span>Học lực khá</span>
+      <%} else if(e.diemtk_cm >= 5.0 && e.diemtk_cm <= 6.4) {%>
+       <span>Học lực trung bình</span>
+      <%} else if(e.diemtk_cm >= 4.0 && e.diemtk_cm <= 4.9) {%>
+       <span>Học lực yếu</span>
+      <%} else {%>
+       <span>Học lực kém</span>
+      <%}%>
+     </td>
+    <td><%= e.namhoc %></td>
+    <td class="text-center">
+      <% if(locals.Role == 1){%>
+        <button class="btn btn-danger btn-xs delete" idtkcn = "<%= e.id_all_cm %>" title="Xóa tổng kết cả năm"><i class="fa fa-trash-o "></i></button>
+      <% }else{%>
+      <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button>
+      <%} %>
+    </td>
+  </tr>
+  <% })}else{%>
+  <tr class="text-center text-danger">
+    <td colspan="9">
+      Không có dữ liệu
+    </td>
+  </tr>
+  <%} %>
+  <!-- kết thúc vòng lặp -->
+</tbody>

@@ -1,0 +1,261 @@
+<% include ../layout/header.ejs %>
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-angle-right" aria-hidden="true"></i> Danh sách tổng kết học kỳ</h3>
+          <% if(locals.Role == 1){%>
+          <button class="btn btn-app restore" data-toggle="modal" data-target="#restore" title="Hồi phục">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" data-toggle="modal" data-target="#result" title="Tổng kết năm học của học sinh">
+            <i class="fa fa-chrome" aria-hidden="true"></i>
+          </button>
+          <% }else{%>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+              <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+              <i class="fa fa-chrome" aria-hidden="true"></i>
+          </button>
+          <%} %>
+        </div>
+        <div class="title_right">
+          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right">
+            <!--  -->
+            <span class="form-inline pull-right">
+              <div class="input-group-append">
+                      <select id="nhomquyen" class="form-control">
+                          <option value="all" selected>-- Tất cả --</option>
+                      </select>
+                      <input class="form-control" type="text" placeholder="tìm kiếm..." value="" id="Search">
+              </div>
+            </span>
+            <!--  -->
+          </div>
+        </div>
+      </div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <div class="clearfix"></div>
+        </div>
+<div class="x_content">
+    <div class="table-responsive">
+        <table class="table table-striped jambo_table bulk_action table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold ; text-align: center;">
+          <thead>
+            <tr class="headings">
+              <th title="Mã học sinh" class="column-title">Mã</th>
+              <th title="Họ tên học sinh" class="column-title">Họ Tên</th>
+              <th class="column-title">Điểm tổng kết</th>
+              <th class="column-title">Xếp loại</th>
+              <th class="column-title">Học kì</th>
+              <th class="column-title">Năm học</th>
+              <th class="column-title text-center">Tùy chọn
+                <button type="button" id="button_excel" class="btn btn-info" title="Xuất file excel" data-toggle="modal" data-target="#showall"><i class="fa fa-chevron-right text-light" aria-hidden="true"></i></button>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="tb_model">
+              <% if(ketqua.length)
+              {ketqua.forEach(function(e, i){%> 
+              <tr>
+                <td><%= e.ma_hs %></td>
+                <td><%= e.ten_hs %></td>
+                <td><%= e.diem %></td>
+                <td>
+                 <% if(e.diem >= 8 && e.diem <= 10) {%>
+                  <span>Học lực giỏi</span>
+                 <%} else if(e.diem >= 6.5 && e.diem <= 7.9) {%>
+                  <span>Học lực khá</span>
+                 <%} else if(e.diem >= 5.0 && e.diem <= 6.4) {%>
+                  <span>Học lực trung bình</span>
+                 <%} else if(e.diem >= 4.0 && e.diem <= 4.9) {%>
+                  <span>Học lực yếu</span>
+                 <%} else {%>
+                  <span>Học lực kém</span>
+                 <%}%>
+                </td>
+                <td><%= e.ten_hk %></td>  
+                <td><%= e.namhoc %></td>  
+                <td class="text-center">
+                  <% if(locals.Role == 1){%>
+                    <button class="btn btn-danger btn-xs delete" idhk = "<%= e.id_hk %>" title="Xóa tổng kết học kỳ"><i class="fa fa-trash-o "></i></button>    
+                  <%}else{%>
+                    <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button>
+                  <%}%>    
+                </td>
+              </tr>
+            <% })}else{%>
+              <tr class="text-center text-danger">
+                <td colspan="9">
+                  Không có dữ liệu
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <!-- Phân trang -->
+        <div class="box-footer clearfix">
+          <% include page.ejs %>
+        </div>
+      </div>
+      <!-- Hồi phục -->
+      <% if(locals.Role == 1){%>
+      <div class="modal" id="restore" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog mw-100 w-75">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title" style="font-size: 1.5 rem">Phục hồi thông tin điểm học kì</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+             <div class="row">
+               <div class="col-12">
+                <table class="weekly table-hover main-manager-display table-bordered dt-responsive nowrap cell-border" style="text-align: center; width: 100%;font-weight: bold;">
+                      <!-- Content in -->
+                        <thead>	
+                          <tr class="headings" style="font-weight: bold;">
+                            <th>Mã</th>
+                            <th>Họ tên</th>
+                            <th>Điểm tổng kết</th>
+                            <th>Học kì</th>
+                            <th>Năm học</th>
+                            <th>Tùy chọn</th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                            <% if(hoiphuc.length)
+                            {hoiphuc.forEach(function(e, i){%>
+                            <tr>
+                              <td><%= e.ma_hs %></td>
+                              <td><%= e.ten_hs %></td>
+                              <td><%= e.diem %></td>
+                              <td><%= e.ten_hk %></td>  
+                              <td><%= e.namhoc %></td>      
+                              <td>
+                                  <button class="btn btn-success btn-sm btn_restore" idhk = "<%= e.id_hk %>" title="Phục hồi"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                                  <button class="btn btn-danger btn-sm btn_delete" idhk = "<%= e.id_hk %>" title="Xóa tất cả thông tin điểm học kì học sinh"><i class="fa fa-trash-o "></i></button>         
+                              </td>
+                            </tr>
+                          <% })}else{%>
+                            <tr class="text-center text-danger">
+                              <td colspan="9" style="padding-top: 15px;">
+                                Không có dữ liệu
+                              </td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      <!-- End content in -->
+                </table>
+               </div>
+             </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+            </div>
+          </div>
+          </div>
+       <!-- End hồi phục -->
+      </div>
+      <!-- End hồi phục -->
+      <!-- Result all -->
+      <div class="modal" id="result"  style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog mw-100 w-75">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title" style="font-size: 1.5 rem">Tổng kết cả năm</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+             <div class="row">
+               <div class="col-12">
+                <table class="weekly table-hover main-manager-display table-bordered dt-responsive nowrap cell-border" style="text-align: center; width: 100%">
+                      <!-- Content in -->
+                        <thead>	
+                          <tr class="headings" style="font-weight: bold;">
+                            <th>STT</th>
+                            <th>Mã học sinh</th>
+                            <th>Tên học sinh</th>
+                            <th>Tùy chọn</th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                            <% var ihm = 1 %>
+                            <% if(convert.length)
+                            {convert.forEach(function(e, i){%>
+                            <tr>
+                              <td><%= ihm++ %></td>
+                              <td><%= e.mahs %></td>
+                              <td><%= e.ten_hs %></td>
+                              <td>
+                                <button class="btn btn-success canam btn-sm" tenhs = "<%= e.ten_hs %>" mahs="<%= e.mahs %>" title="Tổng kết cả năm"><i class="fa fa-check-circle" aria-hidden="true"></i></button>
+                              </td>
+                            </tr>
+                          <% })}else{%>
+                            <tr class="text-center text-danger">
+                              <td colspan="9" style="padding-top: 15px;">
+                                Không có dữ liệu
+                              </td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      <!-- End content in -->
+                </table>
+               </div>
+             </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+            </div>
+          </div>
+          </div>
+       <!-- End hồi phục -->
+      </div>
+      <!-- End result -->
+      <!-- Export excel -->
+      <!-- Export excel -->
+      <div id="showall" class="modal fade" tabindex="-1" role="dialog" style="font-family: Courier New, Courier, monospace; font-weight: bold; text-align: center;">
+        <div class="modal-dialog" style="width: 100%">
+          <div class="modal-content" style="width: 133.5%">
+            <div class="modal-header">
+              <h5 class="modal-title"><strong> Danh Sách Điểm Tổng Kết Học Kì</strong></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body col-xs-12 col-md-12">
+              <div class="col-xs-12 col-md-12" style="overflow: auto; max-height: 500px">
+                <table id="tb_exp" class="table table-bordered table-striped table-condensed table-responsive"></table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="exp" class="btn btn-primary pull-left">Xuất excel</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Export excel -->
+      <% } %>
+</div>
+<% include ../layout/footer.ejs %>
+<!-- Thiếu thư viện này throttle không hoạt động -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+<script src="./js/tonghocki.js"></script>
+<% if(message != ""){ %>
+  <script>
+      Swal.fire({
+          title:"Thông báo!",
+          text:"<%= message %>"
+      });
+  </script>
+<% } %>

@@ -1,0 +1,23 @@
+#check_again{margin-left: 10px;}
+.btn-app{
+    -webkit-transition: all 0.5s ease-in-out;
+}
+.btn-app:hover{
+    -webkit-transform: scale(1.1);
+}
+ul.navbar-right > li > .logout {
+    color: #f2f2f2;
+    font-size: 12px;
+    -webkit-border-radius: 6px;
+    border: 1px solid #64c3c2 !important;
+    padding: 8px 21px;
+    margin-right: 15px;
+    background: #4ECDC4;
+    margin-top: 15px;
+}
+ul.navbar-right > li > .logout:hover {
+    background: #22242a;
+}
+.input-group-append {
+    margin-right: -10px;
+}

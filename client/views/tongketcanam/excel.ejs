@@ -1,0 +1,36 @@
+<table id="tb_exp" class="table table-hover jambo_table table-bordered table-striped table-condensed table-responsive cell-border"
+    style="width: 100%; color: black">
+    <thead>
+        <tr class="headings" style="font-weight: bold; ">
+            <th title="Mã học sinh" class="column-title">Mã</th>
+            <th title="Họ tên học sinh" class="column-title">Họ Tên</th>
+            <th class="column-title">Điểm cả năm</th>
+            <th class="column-title">Xếp loại</th>
+            <th class="column-title">Năm học</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if(datadiemcanam.length)
+        datadiemcanam.forEach(function(e, i){%>
+        <tr>
+            <td><%= e.ma_hs %></td>
+            <td><%= e.ten_hs %></td>
+            <td><%= e.diemtk_cm %></td>
+            <td>
+                <% if(e.diemtk_cm >= 8 && e.diemtk_cm <= 10) {%>
+                <span>Học lực giỏi</span>
+                <%} else if(e.diemtk_cm >= 6.5 && e.diemtk_cm <= 7.9) {%>
+                <span>Học lực khá</span>
+                <%} else if(e.diemtk_cm >= 5.0 && e.diemtk_cm <= 6.4) {%>
+                <span>Học lực trung bình</span>
+                <%} else if(e.diemtk_cm >= 4.0 && e.diemtk_cm <= 4.9) {%>
+                <span>Học lực yếu</span>
+                <%} else {%>
+                <span>Học lực kém</span>
+                <%}%>
+            </td>
+            <td><%= e.namhoc %></td>  
+	  </tr>
+	  <% }) %>
+    </tbody>
+</table>

@@ -1,0 +1,220 @@
+<% include ../layout/header.ejs %>
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-angle-right" aria-hidden="true"></i> Danh sách môn học</h3>
+          <% if(locals.Role == 1){%>
+          <button class="btn btn-app" data-toggle="modal" data-target="#Modalthem" title="Thêm mới môn học">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app refresh" title="Làm mới">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+         </button>
+         <button class="btn btn-app restore" data-toggle="modal" data-target="#restore" title="Hồi phục">
+          <i class="fa fa-recycle" aria-hidden="true"></i>
+        </button>
+        <% }else{%>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app"disabled title="Không có quyền này">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app"disabled title="Không có quyền này">
+          <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+        <%} %>
+        </div>
+        <!-- Tìm kiếm -->
+        <div class="box-tools pull-right">
+            <!-- tìm kiếm thông tin môn học -->
+              <div class="input-group input-group-sm" style="width: 320px; margin-top: 47px;">
+                <input type="search" id="Searchmh" class="form-control pull-right" placeholder="Tìm kiếm thông tin môn học" spellcheck="false">
+                <!-- end tìm kiếm thông tin môn học -->
+              </div>
+        </div>
+        <!-- End -->
+      </div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <div class="clearfix"></div>
+        </div>
+<div class="x_content">
+    <div class="content">
+      <div class="table-responsive">
+          <table class="table table-striped jambo_table bulk_action table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold">
+            <thead>
+              <tr class="headings">
+                <th class="column-title">STT</th>
+                <th class="column-title">Tên Môn Học</th>
+                <th class="column-title">Hệ Số</th>
+                <th class="column-title text-center">Tùy Chọn</th>
+              </tr>
+            </thead>
+            <% var i = 1 %>
+            <tbody id="tb_model">
+                <% ketqua.forEach(tbl_monhoc => { %>
+                  <tr>
+                      <td><%= i++ %></td>
+                      <td><%= tbl_monhoc.ten_mh %></td>
+                      <td><%= tbl_monhoc.heso %></td>          
+                      <td class="text-center">
+                        <% if(locals.Role == 1){%>
+                        <button class="btn btn-primary btn-xs edit" idmh = "<%= tbl_monhoc.id_mh %>" title="Cập nhật thông tin môn học"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-danger btn-xs delete" idmh = "<%= tbl_monhoc.id_mh %>" title="Xóa thông tin môn học"><i class="fa fa-trash-o "></i></button>
+                        <% }else{%>
+                        <button class="btn btn-primary btn-xs" disabled title="Không có quyền này"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button>
+                        <%} %>    
+                      </td>
+                  </tr>
+              <% }); %>
+            </tbody>
+          </table>
+      </div>
+    </div>
+      <!-- Phân trang -->
+      <!-- End phân trang -->
+      <!-- Modal -->
+      <% if(locals.Role == 1){%>
+      <div class="modal" id="Modalthem" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title" style="font-size: 1.5 rem">&nbsp; Thêm mới môn học</h4>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <form action="./monhoc/insert" id="form_insert" method="POST">
+              <div class="modal-body">
+                <!-- Tên môn học -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Môn học</label>  
+                      <input type="text" name="ten_mh" class="form-control" autocomplete="off" spellcheck="false" placeholder="Tên môn học"> 
+                    </div>
+                <!-- Hệ số môn học -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Hệ số</label>  
+                      <input type="number" id="bat_event_so" name="heso" class="form-control" autocomplete="off" spellcheck="false" placeholder="Hệ số môn học"> 
+                    </div>
+              </div>  
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                <button type="submit" id="luu_event" class="btn btn-primary">Lưu</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Update -->
+      <div class="modal" id="Modalsua" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header  alert alert-success">
+                <h4 class="modal-title" style="font-size: 1.5 rem">&nbsp; Cập nhật môn học</h4>
+                <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <!-- Modal body -->
+              <form action="./monhoc/update" id="form_update" method="POST">
+                <div class="modal-body">
+                  <!-- Tên môn học -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Môn học</label>  
+                        <input type="number" id="id_mh" name="id_mh" hidden>
+                        <input type="text" id="ten_mh" name="ten_mh" class="form-control" autocomplete="off" spellcheck="false" placeholder="Tên môn học"> 
+                      </div>
+                  <!-- Hệ số môn học -->
+                      <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Hệ số</label>  
+                        <input type="number" id="bat_event_sua" name="heso" class="form-control" autocomplete="off" spellcheck="false" placeholder="Hệ số môn học"> 
+                      </div>
+                </div>  
+                 <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+              <button type="submit" id="luu_event_sua" class="btn btn-primary">Lưu</button>
+          </div>
+          </form>
+        </div>
+      </div>
+      </div>
+      <!-- End Modal Update -->
+      <!-- Modal hồi phục  -->
+      <div class="modal" id="restore">
+        <div class="modal-dialog mw-100 w-75">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title">Phục hồi thông tin môn học</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+             <div class="row">
+               <div class="col-12">
+                <table class="weekly table-hover main-manager-display table-bordered dt-responsive nowrap cell-border" style="text-align: center; width: 100%;font-weight: bold">
+                      <!-- Content in --> 
+                        <thead>	
+                          <tr class="headings" style="font-weight: bold;">
+                            <th class="column-title">STT</th>
+                            <th class="column-title">Tên Môn Học</th>
+                            <th class="column-title">Hệ Số</th>
+                            <th class="column-title">Tùy Chọn</th>
+                          </tr>
+                        </thead>
+                        <% var m = 1 %>
+                          <tbody>
+                            <% if(hoiphuc.length)
+                            {hoiphuc.forEach(function(e, i){%>
+                            <tr>
+                              <td><%= m++ %></td>
+                              <td><%= e.ten_mh %></td> 
+                              <td><%= e.heso %></td>         
+                                <td>
+                                    <button class="btn btn-success btn-sm btn_restore" idmh = "<%= e.id_mh %>" title="Phục hồi"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                                    <button class="btn btn-danger btn-sm btn_delete" idmh = "<%= e.id_mh %>" title="Xóa tất cả thông tin môn học"><i class="fa fa-trash-o "></i></button>    
+                                </td>
+                            </tr>
+                          <% })}else{%>
+                            <tr class="text-center text-danger">
+                              <td colspan="9" style="padding-top: 15px;">
+                                Không có dữ liệu
+                              </td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      <!-- End content in -->
+                </table>
+               </div>
+             </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+            </div>
+          </div>
+          </div>
+       <!-- End hồi phục -->
+      </div>
+      <!-- End Modal -->
+      <!-- Thông báo -->
+      <% } %>
+</div>
+<% include ../layout/footer.ejs %>
+<!-- Thiếu thư viện này throttle không hoạt động -->
+<script src="./js/monhoc.js"></script>
+<% if(message != ""){ %>
+  <script>
+      Swal.fire({
+          title:"Thông báo!",
+          text:"<%= message %>"
+      });
+  </script>
+<% } %>

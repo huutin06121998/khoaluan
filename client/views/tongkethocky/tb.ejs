@@ -1,0 +1,41 @@
+<tbody id="tb_model">
+  <!-- vòng lặpA -->
+  <!-- STT -->
+  <% if(ds_diem_hk.length)
+      {ds_diem_hk.forEach(function(e, i){%>
+  <tr>
+    <td><%= e.ma_hs %></td>
+    <td><%= e.ten_hs %></td>
+    <td><%= e.diem %></td>
+    <td>
+      <% if(e.diem >= 8 && e.diem <= 10) {%>
+      <span>Học lực giỏi</span>
+      <%} else if(e.diem >= 6.5 && e.diem <= 7.9) {%>
+      <span>Học lực khá</span>
+      <%} else if(e.diem >= 5.0 && e.diem <= 6.4) {%>
+      <span>Học lực trung bình</span>
+      <%} else if(e.diem >= 4.0 && e.diem <= 4.9) {%>
+      <span>Học lực yếu</span>
+      <%} else {%>
+      <span>Học lực kém</span>
+      <%}%>
+      </td>
+      <td><%= e.ten_hk %></td>
+    <td><%= e.namhoc %></td>
+    <td class="text-center">
+      <% if(locals.Role == 1){%>
+      <button class="btn btn-danger btn-xs delete" idhk="<%= e.id_hk %>" title="Xóa tổng kết học kỳ"><i class="fa fa-trash-o "></i></button>
+      <%}else{%>
+      <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button>
+      <%}%>
+    </td>
+  </tr>
+  <% })}else{%>
+  <tr class="text-center text-danger">
+    <td colspan="9">
+      Không có dữ liệu
+    </td>
+  </tr>
+  <%} %>
+  <!-- kết thúc vòng lặp -->
+</tbody>

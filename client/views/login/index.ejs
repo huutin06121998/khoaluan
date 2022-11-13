@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layout/LG_header.ejs %>
+<body>
+  <div id="login-page">
+    <div class="container">
+      <form class="form-login" method="POST" action="">
+        <h2 class="form-login-heading">sign in now</h2>
+        <div class="login-wrap">
+          <input class="form-control" type="text" name="username" placeholder="Username" autocomplete="off">
+          <br>
+          <input class="form-control" type="password" name="password" placeholder="Password" autocomplete="off">
+          <button class="btn btn-theme btn-block" type="submit" style="margin-top: 12px;"><i class="fa fa-lock"></i> SIGN IN</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    $.backstretch("img/login-bg.jpg", {
+      speed: 500
+    });
+  </script>
+</body>
+</html>
+<% if(message!=""){ %>
+	<% if(message=='Bạn đã đăng xuất ra hệ thống'){ %>
+		<script>
+			swal({
+				title: "Thông Báo",
+					text: "<%= message %>",
+					icon: "success",
+			})
+		</script>
+	<% }else{ %>
+		<script>
+			swal({
+				title: "Thông Báo",
+					text: "<%= message %>",
+					icon: "error",
+			})
+		</script>
+	<% } %>
+<% } %>  

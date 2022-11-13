@@ -1,0 +1,23 @@
+<table id="tb_exp" class="weekly table-hover main-manager-display" style="width: 100%">
+	<thead >	
+	  <tr class="text-center headings" style="font-weight: bold; ">
+	    <th>STT</th>
+	    <th>Tên học sinh</th>
+	  </tr>
+	</thead>
+	<tbody>
+	<% var i = 1 %>
+	<% if(datashowall.length == 0){ %>  
+		<tr class="text-center">
+			<td colspan="8" class="text-danger" style="padding-top: 17px;"><strong>Không có dữ liệu</strong></td>
+		</tr>
+	<% }else{ %>
+	<% datashowall.forEach(function(e, i){ %> 
+	  <tr class="text-center">
+	    <td><%- i+1 %></td>
+        <td><%- e.ten_hs %></td>
+	  </tr>
+	  <% }); %>
+	  <% } %>
+	</tbody>
+</table>

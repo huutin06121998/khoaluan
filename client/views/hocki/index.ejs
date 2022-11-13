@@ -1,0 +1,233 @@
+<% include ../layout/header.ejs %>
+<style>
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+</style>
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-angle-right" aria-hidden="true"></i> Danh sách học kì</h3>
+          <% if(locals.Role == 1){%>
+          <button class="btn btn-app" data-toggle="modal" data-target="#Modalthem" title="Thêm mới học kỳ">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app refresh" title="Làm mới">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app restore" data-toggle="modal" data-target="#restore" title="Hồi phục">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <% }else{%>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+              <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-retweet" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-app" disabled title="Không có quyền này">
+            <i class="fa fa-recycle" aria-hidden="true"></i>
+          </button>
+          <%} %>
+        </div>
+      </div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <div class="clearfix"></div>
+        </div>
+<div class="x_content">
+    <div class="content">
+      <div class="table-responsive">
+          <table class="table table-striped jambo_table bulk_action dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+            <thead>
+              <tr class="headings">
+                <th class="column-title">STT</th>
+                <th class="column-title">Mã Học Kì</th>
+                <th class="column-title">Tên Học Kì</th>
+                <th class="column-title text-center">Hệ Số</th>
+                <th class="column-title text-center">Tùy Chọn</th>
+              </tr>
+            </thead>
+            <% var i = 1 %>
+            <tbody id="tb_model">
+                <% ketqua.forEach(tbl_hocky => { %>
+                  <tr>
+                      <td><%= i++ %></td>
+                      <td><%= tbl_hocky.ma_hk %></td>
+                      <td><%= tbl_hocky.ten_hk %></td>     
+                      <td class="text-center"><%= tbl_hocky.heso %></td>         
+                      <td class="text-center">
+                        <% if(locals.Role == 1){%>
+                        <button class="btn btn-primary btn-xs edit" idhk = "<%= tbl_hocky.stt %>" title="Cập nhật thông tin học kì"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-danger btn-xs delete" idhk = "<%= tbl_hocky.stt %>" title="Xóa thông tin học kì"><i class="fa fa-trash-o "></i></button> 
+                        <% }else{%>
+                        <button class="btn btn-primary btn-xs" disabled title="Không có quyền này"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-danger btn-xs" disabled title="Không có quyền này"><i class="fa fa-trash-o "></i></button> 
+                        <%} %>   
+                      </td>
+                  </tr>
+              <% }); %>
+            </tbody>
+          </table>
+      </div>
+    </div>
+      <!-- Phân trang -->
+      <!-- End phân trang -->
+      <% if(locals.Role == 1){%>
+      <!-- Modal -->
+      <div class="modal" id="Modalthem" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title" style="font-size: 1.5 rem">&nbsp; Thêm mới học kì</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <form action="./hocki/insert" id="form_insert" method="POST">
+              <div class="modal-body">
+                <!-- Mã học kì  -->
+                    <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Mã học kì</label>  
+                        <input type="text" id="trungma_i" name="ma_hk" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã học kì"> 
+                      </div>
+                <!-- Tên học kì -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Tên học kì</label>  
+                      <input type="text" name="ten_hk" class="form-control" autocomplete="off" spellcheck="false" placeholder="Tên học kì"> 
+                    </div>
+                <!-- Hệ số học kì -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Hệ số</label>  
+                      <input type="number" id="bat_event_so" name="heso" class="form-control" autocomplete="off" spellcheck="false" placeholder="Hệ số học kì"> 
+                    </div>
+              </div>  
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+                <button type="submit" id="luu_event" class="btn btn-primary">Lưu</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+        <!-- Modal Update -->
+        <div class="modal" id="Modalsua" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header  alert alert-success">
+                <h4 class="modal-title" style="font-size: 1.5 rem;">&nbsp; Cập nhật học kỳ</h4>
+                <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <!-- Modal body -->
+              <form action="./hocki/update" id="form_update" method="POST">
+                <div class="modal-body">
+                 <!-- Mã học kì  -->
+                 <div class="form-group">
+                        <label for="text-input" class=" form-control-label">Mã học kì</label> 
+                        <input type="number" id="idhk" name="id_hk" hidden> 
+                        <input type="text" id="ma_hk" name="ma_hk" class="form-control" autocomplete="off" spellcheck="false" placeholder="Mã học kì" readonly> 
+                      </div>
+                <!-- Tên học kì -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Tên học kì</label>  
+                      <input type="text" id="ten_hk" name="ten_hk" class="form-control" autocomplete="off" spellcheck="false" placeholder="Tên học kì"> 
+                    </div>
+                <!-- Hệ số học kì -->
+                    <div class="form-group">
+                      <label for="text-input" class=" form-control-label">Hệ số</label>  
+                      <input type="number" id="bat_event_sua" name="heso" class="form-control" autocomplete="off" spellcheck="false" placeholder="Hệ số học kì"> 
+                    </div>
+                </div>  
+                 <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+              <button type="submit" id="luu_event_sua" class="btn btn-primary">Lưu</button>
+          </div>
+          </form>
+        </div>
+      </div>
+        </div>
+        <!-- End Modal Update -->
+      <!-- End Modal -->
+      <!-- Modal hồi phục -->
+      <div class="modal" id="restore" style="font-family: Courier New, Courier, monospace;font-weight: bold;">
+        <div class="modal-dialog mw-100 w-75">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header  alert alert-success">
+              <h5 class="modal-title">Phục hồi thông tin học kì</h5>
+              <button type="button text-danger" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+             <div class="row">
+               <div class="col-12">
+                <table class="weekly table-hover main-manager-display table-bordered dt-responsive nowrap cell-border" style="font-family: Courier New, Courier, monospace;font-weight: bold;text-align: center; width: 100%" >
+                      <!-- Content in --> 
+                        <thead>	
+                          <tr class="headings" style="font-weight: bold;">
+                            <th class="column-title">STT</th>
+                            <th class="column-title">Mã Học Kì</th>
+                            <th class="column-title">Tên Học Kì</th>
+                            <th class="column-title">Hệ Số</th>
+                            <th class="column-title">Tùy Chọn</th>
+                          </tr>
+                        </thead>
+                        <% var m = 1 %>
+                          <tbody>
+                            <% if(hoiphuc.length)
+                            {hoiphuc.forEach(function(e, i){%> 
+                            <tr>
+                              <td><%= m++ %></td>
+                              <td><%= e.ma_hk %></td>
+                              <td><%= e.ten_hk %></td>     
+                              <td><%= e.heso %></td>           
+                                <td>
+                                    <button class="btn btn-success btn-sm btn_restore" idhp = "<%= e.stt %>" title="Phục hồi"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                                    <button class="btn btn-danger btn-sm btn_delete" idhp = "<%= e.stt %>" title="Xóa tất cả thông tin học kì"><i class="fa fa-trash-o "></i></button>    
+                                </td>
+                            </tr>
+                          <% })}else{%>
+                            <tr class="text-center text-danger">
+                              <td colspan="9" style="padding-top: 15px;">
+                                Không có dữ liệu
+                              </td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      <!-- End content in -->
+                </table>
+               </div>
+             </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ðóng</button>
+            </div>
+          </div>
+          </div>
+       <!-- End hồi phục -->
+      </div>
+      <!-- End hồi phục -->
+      <!-- Thông báo -->
+      <% } %>
+</div>
+<% include ../layout/footer.ejs %>
+<!-- Thiếu thư viện này throttle không hoạt động -->
+<script src="./js/hocki.js"></script>
+<% if(message != ""){ %>
+  <script>
+      Swal.fire({
+          title:"Thông báo!",
+          text:"<%= message %>"
+      });
+  </script>
+<% } %>
